@@ -1,205 +1,284 @@
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 
-public class Main {
+public class EnrollmentApp {
 
     public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
 
-        int[] studentID = new int[10];
-        String[] fullName = new String[10];
-        int[] age = new int[10];
-        String[] course = new String[10];
-        double[] grade = new double[10];
-        boolean[] enrolled = new boolean[10];
+        ArrayList<Student> students = new ArrayList<>();
+        ArrayList<Course> courses = new ArrayList<>();
+        HashMap<String, ArrayList<String>> enrollments = new HashMap<>();
 
-        int count = 0;
-        int choice;
+        String[] validPrograms = {"BSIT", "BSCS"};
 
-        do {
+        int choice = -1;
 
-            System.out.println("\n===== STUDENT INFORMATION SYSTEM =====");
-            System.out.println("[1] Add Student");
-            System.out.println("[2] View All Students");
-            System.out.println("[3] Search Student by ID");
-            System.out.println("[4] View Statistics");
-            System.out.println("[5] Exit");
-            System.out.print("Enter choice: ");
+        while (choice != 0) {
 
-            choice = sc.nextInt();
+            printMenu();
+
+            try {
+                choice = Integer.parseInt(sc.nextLine());
+            } catch (Exception e) {
+                System.out.println("Invalid input.");
+                continue;
+            }
 
             switch (choice) {
 
                 case 1:
 
-                    if (count == studentID.length) {
-                        System.out.println("\nStudent list is already full!");
+                    System.out.println("\n--- REGISTER STUDENT ---");
+
+                    System.out.print("Student ID: ");
+                    String id = sc.nextLine();
+
+                    System.out.print("Full Name: ");
+                    String name = sc.nextLine();
+
+                    System.out.print("Program: ");
+                    String program = sc.nextLine();
+
+                    boolean valid = false;
+
+                    for (String p : validPrograms) {
+                        if (p.equalsIgnoreCase(program)) {
+                            program = p;
+                            valid = true;
+                            break;
+                        }
+                    }
+
+                    if (!valid) {
+                        System.out.println("[ERROR] Invalid program.");
                         break;
                     }
 
-                    System.out.print("\nEnter Student ID: ");
-                    studentID[count] = sc.nextInt();
+                    System.out.print("Year Level: ");
+                    int year = Integer.parseInt(sc.nextLine());
 
-                    sc.nextLine();
+                    if (year < 1 || year > 4) {
+                        System.out.println("[ERROR] Invalid year level.");
+                        break;
+                    }
 
-                    System.out.print("Enter Full Name: ");
-                    fullName[count] = sc.nextLine();
+                    students.add(new Student(id, name, program, year));
 
-                    do {
-                        System.out.print("Enter Age: ");
-                        age[count] = sc.nextInt();
-
-                        if (age[count] <= 0) {
-                            System.out.println("Invalid! Age must be greater than 0.");
-                        }
-
-                    } while (age[count] <= 0);
-
-                    sc.nextLine();
-
-                    System.out.print("Enter Course: ");
-                    course[count] = sc.nextLine();
-
-                    do {
-
-                        System.out.print("Enter Grade: ");
-                        grade[count] = sc.nextDouble();
-
-                        if (grade[count] < 0 || grade[count] > 100) {
-                            System.out.println("Invalid! Grade must be between 0 and 100.");
-                        }
-
-                    } while (grade[count] < 0 || grade[count] > 100);
-
-                    System.out.print("Is Enrolled (true/false): ");
-                    enrolled[count] = sc.nextBoolean();
-
-                    count++;
-
-                    System.out.println("\n>> Student added successfully!");
+                    System.out.println("[OK] Student registered successfully!");
 
                     break;
 
                 case 2:
 
-                    if (count == 0) {
-                        System.out.println("\nNo student records found.");
-                        break;
-                    }
+                    System.out.println("\n--- ADD COURSE ---");
 
-                    System.out.println("\n----------- STUDENT RECORDS -----------");
+                    System.out.print("Course Code: ");
+                    String code = sc.nextLine();
 
-                    System.out.printf("%-8s %-20s %-5s %-10s %-8s %-15s%n",
-                            "ID", "NAME", "AGE", "COURSE", "GRADE", "STANDING");
+                    System.out.print("Title: ");
+                    String title = sc.nextLine();
 
-                    for (int i = 0; i < count; i++) {
+                    System.out.print("Units: ");
+                    int units = Integer.parseInt(sc.nextLine());
 
-                        String standing;
+                    System.out.print("Capacity: ");
+                    int capacity = Integer.parseInt(sc.nextLine());
 
-                        if (grade[i] >= 90) {
-                            standing = "Dean's Lister";
-                        } else if (grade[i] >= 75) {
-                            standing = "Passed";
-                        } else {
-                            standing = "Failed";
-                        }
+                    courses.add(new Course(code, title, units, capacity));
 
-                        System.out.printf("%-8d %-20s %-5d %-10s %-8.1f %-15s%n",
-                                studentID[i],
-                                fullName[i],
-                                age[i],
-                                course[i],
-                                grade[i],
-                                standing);
-                    }
+                    System.out.println("[OK] Course added.");
 
                     break;
 
                 case 3:
 
-                    if (count == 0) {
-                        System.out.println("\nNo student records found.");
+                    System.out.println("\n--- ENROLL STUDENT ---");
+
+                    System.out.print("Student ID: ");
+                    String sid = sc.nextLine();
+
+                    Student student = findStudent(students, sid);
+
+                    if (student == null) {
+                        System.out.println("[ERROR] Student not found.");
                         break;
                     }
 
-                    System.out.print("\nEnter Student ID to search: ");
-                    int searchID = sc.nextInt();
+                    System.out.print("Course Code: ");
+                    String ccode = sc.nextLine();
 
-                    boolean found = false;
+                    Course course = findCourse(courses, ccode);
 
-                    for (int i = 0; i < count; i++) {
-
-                        if (studentID[i] == searchID) {
-
-                            System.out.println("\nStudent Found!");
-                            System.out.println("------------------------");
-                            System.out.println("Student ID : " + studentID[i]);
-                            System.out.println("Name       : " + fullName[i]);
-                            System.out.println("Age        : " + age[i]);
-                            System.out.println("Course     : " + course[i]);
-                            System.out.println("Grade      : " + grade[i]);
-                            System.out.println("Enrolled   : " + enrolled[i]);
-
-                            found = true;
-                            break;
-                        }
+                    if (course == null) {
+                        System.out.println("[ERROR] Course not found.");
+                        break;
                     }
 
-                    if (!found) {
-                        System.out.println("Student not found.");
+                    if (course.isFull()) {
+                        System.out.println("[ERROR] Course is full.");
+                        break;
                     }
+
+                    ArrayList<String> list = enrollments.get(sid);
+
+                    if (list == null) {
+                        list = new ArrayList<>();
+                        enrollments.put(sid, list);
+                    }
+
+                    if (list.contains(ccode)) {
+                        System.out.println("[ERROR] Student is already enrolled.");
+                        break;
+                    }
+
+                    list.add(ccode);
+                    course.addOneEnrollee();
+
+                    System.out.println("[OK] " + student.getFullName()
+                            + " enrolled in " + course.getCourseCode()
+                            + " (" + course.getTitle() + ")");
 
                     break;
 
                 case 4:
 
-                    if (count == 0) {
-                        System.out.println("\nNo student records found.");
-                        break;
-                    }
+                    System.out.println("\n--- STUDENTS ---");
 
-                    double totalGrade = 0;
-                    double highestGrade = grade[0];
-                    String topStudent = fullName[0];
-
-                    for (int i = 0; i < count; i++) {
-
-                        totalGrade += grade[i];
-
-                        if (grade[i] > highestGrade) {
-                            highestGrade = grade[i];
-                            topStudent = fullName[i];
+                    if (students.isEmpty()) {
+                        System.out.println("No students yet.");
+                    } else {
+                        for (Student s : students) {
+                            System.out.println(s.describe());
                         }
                     }
-
-                    double average = totalGrade / count;
-
-                    int enrolledCount = 0;
-
-                    for (boolean status : enrolled) {
-                        if (status) {
-                            enrolledCount++;
-                        }
-                    }
-
-                    System.out.println("\n----------- STATISTICS -----------");
-                    System.out.println("Total Students      : " + count);
-                    System.out.println("Enrolled Students   : " + enrolledCount);
-                    System.out.printf("Average Grade       : %.2f%n", average);
-                    System.out.println("Top Student         : " + topStudent + " (" + highestGrade + ")");
 
                     break;
 
                 case 5:
-                    System.out.println("\nThank you for using the Student Information System. Goodbye!");
+
+                    System.out.println("\n--- COURSES ---");
+
+                    if (courses.isEmpty()) {
+                        System.out.println("No courses yet.");
+                    } else {
+                        for (Course c : courses) {
+                            System.out.println(
+                                    c.getCourseCode()
+                                            + " | "
+                                            + c.getTitle()
+                                            + " | "
+                                            + c.getUnits()
+                                            + " units | "
+                                            + c.getEnrolledCount()
+                                            + "/"
+                                            + c.getCapacity()
+                            );
+                        }
+                    }
+
+                    break;
+
+                case 6:
+
+                    System.out.println("\n--- STUDENT LOAD ---");
+
+                    System.out.print("Student ID: ");
+                    String studentID = sc.nextLine();
+
+                    Student stu = findStudent(students, studentID);
+
+                    if (stu == null) {
+                        System.out.println("[ERROR] Student not found.");
+                        break;
+                    }
+
+                    System.out.println("Student: " + stu.getFullName());
+
+                    ArrayList<String> enrolled = enrollments.get(studentID);
+
+                    if (enrolled == null || enrolled.isEmpty()) {
+                        System.out.println("No enrolled courses.");
+                        break;
+                    }
+
+                    int total = 0;
+
+                    for (String courseCode : enrolled) {
+
+                        Course c = findCourse(courses, courseCode);
+
+                        if (c != null) {
+                            System.out.println(
+                                    c.getCourseCode()
+                                            + " "
+                                            + c.getTitle()
+                                            + " "
+                                            + c.getUnits()
+                                            + " units");
+
+                            total += c.getUnits();
+                        }
+                    }
+
+                    System.out.println("-------------------------");
+                    System.out.println("Total Units: " + total);
+
+                    break;
+
+                case 0:
+
+                    System.out.println("Thank you for using the Liceo Enrollment System!");
+
                     break;
 
                 default:
-                    System.out.println("\nInvalid choice! Please enter 1-5.");
-            }
 
-        } while (choice != 5);
+                    System.out.println("Invalid choice.");
+            }
+        }
 
         sc.close();
+    }
+
+    static void printMenu() {
+
+        System.out.println();
+        System.out.println("========================================");
+        System.out.println("      LICEO ENROLLMENT SYSTEM (CLI)");
+        System.out.println("========================================");
+        System.out.println("[1] Register Student");
+        System.out.println("[2] Add Course Offering");
+        System.out.println("[3] Enroll Student to Course");
+        System.out.println("[4] View All Students");
+        System.out.println("[5] View All Courses");
+        System.out.println("[6] View Student Load (Courses + Total Units)");
+        System.out.println("[0] Exit");
+        System.out.println("----------------------------------------");
+        System.out.print("Enter choice: ");
+    }
+
+    static Student findStudent(ArrayList<Student> list, String id) {
+
+        for (Student s : list) {
+            if (s.getStudentId().equals(id)) {
+                return s;
+            }
+        }
+
+        return null;
+    }
+
+    static Course findCourse(ArrayList<Course> list, String code) {
+
+        for (Course c : list) {
+            if (c.getCourseCode().equals(code)) {
+                return c;
+            }
+        }
+
+        return null;
     }
 }
