@@ -24,7 +24,6 @@ public class EnrollmentApp {
             switch (choice) {
 
                 case 1:
-                    // Register Student
                     System.out.println("--- REGISTER STUDENT ---");
 
                     System.out.print("Student ID : ");
@@ -62,7 +61,6 @@ public class EnrollmentApp {
                     break;
 
                 case 2:
-                    // Add Course
                     System.out.println("--- ADD COURSE ---");
 
                     System.out.print("Course Code : ");
@@ -83,7 +81,6 @@ public class EnrollmentApp {
                     break;
 
                 case 3:
-                    // Enroll Student
                     System.out.println("--- ENROLL STUDENT ---");
 
                     System.out.print("Student ID : ");
@@ -138,7 +135,6 @@ public class EnrollmentApp {
                     break;
 
                 case 4:
-                    // View Students
                     System.out.println("--- STUDENTS ---");
 
                     for (Student s : students) {
@@ -151,7 +147,6 @@ public class EnrollmentApp {
                     break;
 
                 case 5:
-                    // View Courses
                     System.out.println("--- COURSES ---");
 
                     for (Course c : courses) {
@@ -165,7 +160,6 @@ public class EnrollmentApp {
                     break;
 
                 case 6:
-                    // Student Load
                     System.out.print("Student ID : ");
                     String studId = sc.nextLine();
 
