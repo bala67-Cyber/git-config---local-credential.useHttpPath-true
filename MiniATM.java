@@ -54,6 +54,8 @@ public class MiniATM {
                     );
             }
         }
+
+        input.close();
     }
 
     static void printMenu() {
@@ -77,14 +79,12 @@ public class MiniATM {
 
             double amount = Double.parseDouble(line);
 
-
             if (amount <= 0) {
                 throw new InvalidAmountException(
                         "Deposit amount must be greater than zero."
                 );
             }
 
-        
             balance += amount;
 
             System.out.printf(
@@ -95,17 +95,14 @@ public class MiniATM {
 
         } catch (NumberFormatException e) {
 
-    
             System.out.println("[!] Please enter a valid number.");
 
         } catch (InvalidAmountException e) {
-
 
             System.out.println("[!] " + e.getMessage());
 
         } finally {
 
-        
             System.out.println("-- transaction finished --\n");
         }
     }
@@ -120,10 +117,8 @@ public class MiniATM {
 
         try {
 
-        
             double amount = Double.parseDouble(line);
 
-    
             if (amount <= 0) {
                 throw new InvalidAmountException(
                         "Withdrawal amount must be greater than zero."
@@ -141,7 +136,6 @@ public class MiniATM {
                 );
             }
 
-        
             balance -= amount;
 
             System.out.printf(
@@ -152,17 +146,14 @@ public class MiniATM {
 
         } catch (NumberFormatException e) {
 
-        
             System.out.println("[!] Please enter a valid number.");
 
         } catch (InvalidAmountException | InsufficientFundsException e) {
 
-        
             System.out.println("[!] " + e.getMessage());
 
         } finally {
 
-        
             System.out.println("-- transaction finished --\n");
         }
     }
@@ -179,11 +170,6 @@ public class MiniATM {
     }
 }
 
-/*
- * ============================================================================
- *  CUSTOM EXCEPTIONS
- * ============================================================================
- */
 class InsufficientFundsException extends Exception {
 
     private double shortfall;
@@ -202,17 +188,5 @@ class InvalidAmountException extends Exception {
 
     public InvalidAmountException(String message) {
         super(message);
-    }
-                        }    
-    public String describe() {
-        String status;
-
-        if (isBorrowed) {
-            status = "Borrowed";
-        } else {
-            status = "Available";
-        }
-
-        return title + " by " + author + " [" + status + "]";
     }
 }
