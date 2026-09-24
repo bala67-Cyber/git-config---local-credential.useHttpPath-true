@@ -1,0 +1,18 @@
+# LICEO RIDE - Semi-Final Laboratory Exam Answers
+ 
+Name:James Carl S Bala
+Section:BSIT-2-1
+ 
+## Question 1
+Why is the list in RideManager typed ArrayList<Ride> and not ArrayList<Jeepney>?
+ 
+Your answer:Because Ride is the general class, so the list can store different types of rides that are subclasses of Ride, including Jeepney. If it was ArrayList<Jeepney>, it could only store Jeepney objects.
+ 
+## Question 2
+In showStudentDiscounts(), why must you check instanceof before the cast?
+ 
+Your answer:We check instanceof first to make sure the object is really a StudentRide before casting it. This helps prevent errors or crashes if the object is a different type of Ride.
+
+
+
+
